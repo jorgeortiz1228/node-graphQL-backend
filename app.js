@@ -64,8 +64,11 @@ app.use((error, req, res, next) => {
 mongoose
     .connect('mongodb+srv://Jay:smallcouncil@cluster0-7xgym.mongodb.net/messages?retryWrites=true&w=majority')
     .then(result => {
-        app.listen(8008); //max used 8000
+        const server = app.listen(8008); //max used 8000
+        //npm install --save socket.io
+        const io = require('./socket').init(server);
+        io.on('connection', socket => {
+            console.log('Client connectesd .');
+        });
     })
-    .catch(err => {
-        console.log(err);
-    });
+    .catch(err => console.log(err));
