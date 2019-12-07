@@ -8,9 +8,6 @@ const mongoose = require('mongoose');
 //npm install --save multer
 const multer = require('multer');
 
-const feedRoutes = require('./routes/feed');
-const authRoutes = require('./routes/auth');
-
 const app = express();
 
 const fileStorage = multer.diskStorage({
@@ -50,9 +47,6 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/feed', feedRoutes);
-app.use('/auth', authRoutes);
-
 app.use((error, req, res, next) => {
     console.log(error);
     const status = error.statusCode || 500;
@@ -64,11 +58,6 @@ app.use((error, req, res, next) => {
 mongoose
     .connect('mongodb+srv://Jay:smallcouncil@cluster0-7xgym.mongodb.net/messages?retryWrites=true&w=majority')
     .then(result => {
-        const server = app.listen(8008); //max used 8000
-        //npm install --save socket.io
-        const io = require('./socket').init(server);
-        io.on('connection', socket => {
-            console.log('Client connectesd .');
-        });
+        app.listen(8008); //max used 8000
     })
     .catch(err => console.log(err));
