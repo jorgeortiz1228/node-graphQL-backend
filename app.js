@@ -7,6 +7,11 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 //npm install --save multer
 const multer = require('multer');
+//npm install --save graphql express-graphql
+const graphqlHttp = require('express-graphql');
+
+const graphqlSchema = require('./graphql/schema');
+const graphqlResolver = require('./graphql/resolvers');
 
 const app = express();
 
@@ -47,6 +52,12 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use('/graphql', graphqlHttp({
+    schema: graphqlSchema,
+    rootValue: graphqlResolver,
+    graphiql: true
+}));
+
 app.use((error, req, res, next) => {
     console.log(error);
     const status = error.statusCode || 500;
@@ -56,7 +67,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-    .connect('mongodb+srv://Jay:smallcouncil@cluster0-7xgym.mongodb.net/messages?retryWrites=true&w=majority')
+    .connect('mongodb+srv://Jay:smallcouncil@cluster0-7xgym.mongodb.net/messagesGraph?retryWrites=true&w=majority')
     .then(result => {
         app.listen(8008); //max used 8000
     })
